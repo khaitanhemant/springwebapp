@@ -1,5 +1,6 @@
 package com.example.springmvcapp.controller;
 
+import com.example.springmvcapp.model.Order;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -7,8 +8,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
     @RequestMapping("/")
-    String entry()
+    Order entry()
     {
-        return "Welcome to my first spring Web App!!";
+        Order o1=new Order();
+        o1.orderid="CAP001";
+        o1.amount=300.00;
+        o1.itemqty=2;
+        return o1;
     }
 }
