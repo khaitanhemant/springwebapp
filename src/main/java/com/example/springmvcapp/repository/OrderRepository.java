@@ -1,4 +1,4 @@
-package com.example.springmvcapp;
+package com.example.springmvcapp.repository;
 
 import com.example.springmvcapp.model.Orders;
 import com.example.springmvcapp.model.Products;
@@ -8,6 +8,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<Orders, String>
+public interface OrderRepository extends JpaRepository<Orders, String>
 {
 }

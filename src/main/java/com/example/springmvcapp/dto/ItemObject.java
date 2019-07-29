@@ -1,17 +1,10 @@
-package com.example.springmvcapp.model;
+package com.example.springmvcapp.dto;
 
-
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-@Entity
-public class Products {
-
-    @Id
+public class ItemObject {
     String proid;
     String name;
     double price;
+    int qty;
 
     public String getProid() {
         return proid;
@@ -19,6 +12,14 @@ public class Products {
 
     public void setProid(String proid) {
         this.proid = proid;
+    }
+
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int qty) {
+        this.qty = qty;
     }
 
     public String getName() {
