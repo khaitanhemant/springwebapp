@@ -1,6 +1,7 @@
 package com.example.springmvcapp.service;
 
 import com.example.springmvcapp.dto.ItemObject;
+import com.example.springmvcapp.dto.OrderCreateDTO;
 import com.example.springmvcapp.dto.OrderDTO;
 import com.example.springmvcapp.model.OrderItems;
 import com.example.springmvcapp.model.Orders;
@@ -11,7 +12,6 @@ import com.example.springmvcapp.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +51,7 @@ public class OrderService {
     public List<OrderDTO> getallOrders()
     {
         List<Orders> orders = orderRepository.findAll();
-        List<OrderDTO> objs=new ArrayList<OrderDTO>();
+        List<OrderDTO> objs=new ArrayList<>();
         for(int i=0;i<orders.size();i++)
         {
             OrderDTO obj=new OrderDTO();
@@ -74,6 +74,12 @@ public class OrderService {
         }
         return objs;
 
+    }
+
+    public OrderCreateDTO createOrder(OrderCreateDTO order)
+    {
+
+        return order;
     }
 
 

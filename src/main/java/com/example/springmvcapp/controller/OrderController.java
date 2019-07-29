@@ -1,5 +1,6 @@
 package com.example.springmvcapp.controller;
 
+import com.example.springmvcapp.dto.OrderCreateDTO;
 import com.example.springmvcapp.dto.OrderDTO;
 import com.example.springmvcapp.model.OrderItems;
 import com.example.springmvcapp.model.Products;
@@ -8,9 +9,7 @@ import com.example.springmvcapp.service.OrderService;
 import com.example.springmvcapp.model.Orders;
 import com.example.springmvcapp.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import java.lang.reflect.Array;
@@ -60,10 +59,11 @@ public class OrderController {
     @RequestMapping("/orderitems")
     public List<OrderItems> returnallorderitems(){ return orderItemService.getallOrderItems();}
 
+    @RequestMapping(value = "/order/create", method = RequestMethod.POST)
+    public OrderCreateDTO createOrder(@RequestBody OrderCreateDTO order){return orderService.createOrder(order);}
 
-
-
-
+    @RequestMapping(value="/product/create",method=RequestMethod.POST)
+    public String createProduct(@RequestBody Products product){return productService.createProduct(product);}
 
 
 }

@@ -24,4 +24,9 @@ public class ProductService {
     {
         return productRepository.findAll();
     }
+
+    public String createProduct(Products product){
+        productRepository.save(product);
+        return "Product "+product.getProid()+" has been successfully added";
+    }
 }

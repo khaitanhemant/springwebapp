@@ -5,7 +5,7 @@ import java.util.List;
 public class OrderDTO {
     String ordid;
     double amount;
-    List<ItemObject> items;
+    List<ItemObject> orderitems;
 
     public String getOrdid() {
         return ordid;
@@ -24,10 +24,10 @@ public class OrderDTO {
     }
 
     public List<ItemObject> getOrderitems() {
-        return items;
+        return orderitems;
     }
 
-    public void setOrderitems(List<ItemObject> items) {
-        this.items = items;
+    public void setOrderitems(List<ItemObject> orderitems) {
+        this.orderitems = orderitems;
     }
 }
