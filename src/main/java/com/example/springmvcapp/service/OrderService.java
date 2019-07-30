@@ -82,10 +82,11 @@ public class OrderService {
         or.setAmount(0);
         for(int i=0;i<order.orderitems.size();i++)
         {
-            or.amount+=order.orderitems.get(i).getQty()*order.orderitems.get(i).getPrice();
+            Optional<Products> product=productRepository.findById(order.orderitems.get(i).getProid());
+            or.amount+=order.orderitems.get(i).getQty()*product.get().getPrice();
         }
         or.setAmount(or.amount);
-        Orders o=orderRepository.save(or);
+        orderRepository.save(or);
 
         List<OrderItems> ois=new ArrayList<OrderItems>();
         for(int i=0;i<order.orderitems.size();i++)
@@ -97,7 +98,7 @@ public class OrderService {
             ois.add(item);
         }
         orderItemRepository.saveAll(ois);
-        return "Your order "+o.getOrdid()+" has been created!";
+        return "Your order "+or.getOrdid()+" has been created!";
     }
 
 
