@@ -9,15 +9,15 @@ import javax.persistence.Id;
 public class Products {
 
     @Id
-    String proid;
+    int proid;
     String name;
     double price;
 
-    public String getProid() {
+    public int getProid() {
         return proid;
     }
 
-    public void setProid(String proid) {
+    public void setProid(int proid) {
         this.proid = proid;
     }
 

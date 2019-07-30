@@ -3,15 +3,18 @@ package com.example.springmvcapp.model;
 import com.sun.javafx.beans.IDProperty;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
 public class OrderItems {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int id;
-    public String ordid;
-    public String proid;
+    public int ordid;
+    public int proid;
     public int qty;
 
     public int getId() {
@@ -22,19 +25,17 @@ public class OrderItems {
         this.id = id;
     }
 
-    public String getOrdid() {
+    public int getOrdid() {
         return ordid;
     }
 
-    public void setOrdid(String ordid) {
-        this.ordid = ordid;
-    }
+    public void setOrdid(int ordid) { this.ordid = ordid; }
 
-    public String getProid() {
+    public int getProid() {
         return proid;
     }
 
-    public void setProid(String proid) {
+    public void setProid(int proid) {
         this.proid = proid;
     }
 

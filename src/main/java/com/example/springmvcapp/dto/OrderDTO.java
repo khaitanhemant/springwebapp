@@ -3,15 +3,15 @@ package com.example.springmvcapp.dto;
 import java.util.List;
 
 public class OrderDTO {
-    String ordid;
+    int ordid;
     double amount;
     List<ItemObject> orderitems;
 
-    public String getOrdid() {
+    public int getOrdid() {
         return ordid;
     }
 
-    public void setOrdid(String ordid) {
+    public void setOrdid(int ordid) {
         this.ordid = ordid;
     }
 

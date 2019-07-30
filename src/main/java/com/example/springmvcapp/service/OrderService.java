@@ -26,7 +26,7 @@ public class OrderService {
     @Autowired
     private ProductRepository productRepository;
 
-    public OrderDTO getOrder(String id)
+    public OrderDTO getOrder(int id)
     {
         Optional<Orders> order = orderRepository.findById(id);
         OrderDTO obj=new OrderDTO();
@@ -76,10 +76,28 @@ public class OrderService {
 
     }
 
-    public OrderCreateDTO createOrder(OrderCreateDTO order)
+    public String createOrder(OrderCreateDTO order)
     {
+        Orders or=new Orders();
+        or.setAmount(0);
+        for(int i=0;i<order.orderitems.size();i++)
+        {
+            or.amount+=order.orderitems.get(i).getQty()*order.orderitems.get(i).getPrice();
+        }
+        or.setAmount(or.amount);
+        Orders o=orderRepository.save(or);
 
-        return order;
+        List<OrderItems> ois=new ArrayList<OrderItems>();
+        for(int i=0;i<order.orderitems.size();i++)
+        {
+            OrderItems item=new OrderItems();
+            item.setOrdid(or.getOrdid());
+            item.setProid(order.orderitems.get(i).getProid());
+            item.setQty(order.orderitems.get(i).getQty());
+            ois.add(item);
+        }
+        orderItemRepository.saveAll(ois);
+        return "Your order "+o.getOrdid()+" has been created!";
     }
 
 

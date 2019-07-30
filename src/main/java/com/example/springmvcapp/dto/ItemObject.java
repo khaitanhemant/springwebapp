@@ -1,16 +1,16 @@
 package com.example.springmvcapp.dto;
 
 public class ItemObject {
-    String proid;
+    int proid;
     String name;
     double price;
     int qty;
 
-    public String getProid() {
+    public int getProid() {
         return proid;
     }
 
-    public void setProid(String proid) {
+    public void setProid(int proid) {
         this.proid = proid;
     }
 

@@ -36,10 +36,10 @@ public class OrderController {
     }
 
     @RequestMapping("/order/{id}")
-    public OrderDTO returnOrder(@PathVariable String id) { return orderService.getOrder(id); }
+    public OrderDTO returnOrder(@PathVariable int id) { return orderService.getOrder(id); }
 
     @RequestMapping("/product/{id}")
-    public Optional<Products> returnProduct(@PathVariable String id)
+    public Optional<Products> returnProduct(@PathVariable int id)
     {
         return productService.getProduct(id);
     }
@@ -60,7 +60,7 @@ public class OrderController {
     public List<OrderItems> returnallorderitems(){ return orderItemService.getallOrderItems();}
 
     @RequestMapping(value = "/order/create", method = RequestMethod.POST)
-    public OrderCreateDTO createOrder(@RequestBody OrderCreateDTO order){return orderService.createOrder(order);}
+    public String createOrder(@RequestBody OrderCreateDTO order){return orderService.createOrder(order);}
 
     @RequestMapping(value="/product/create",method=RequestMethod.POST)
     public String createProduct(@RequestBody Products product){return productService.createProduct(product);}

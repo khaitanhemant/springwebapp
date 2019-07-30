@@ -1,20 +1,23 @@
 package com.example.springmvcapp.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import org.hibernate.annotations.GenericGenerator;
+import sun.rmi.rmic.Generator;
+
+import javax.persistence.*;
 
 
 @Entity
 public class Orders {
     @Id
-    public String ordid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public int ordid;
     public double amount;
 
-    public String getOrdid() {
+    public int getOrdid() {
         return ordid;
     }
 
-    public void setOrdid(String ordid) {
+    public void setOrdid(int ordid) {
         this.ordid = ordid;
     }
 
