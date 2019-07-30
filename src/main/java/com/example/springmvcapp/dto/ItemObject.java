@@ -1,17 +1,17 @@
 package com.example.springmvcapp.dto;
 
 public class ItemObject {
-    int proid;
-    String name;
-    double price;
-    int qty;
+    private int proId;
+    private String name;
+    private double price;
+    private int qty;
 
-    public int getProid() {
-        return proid;
+    public int getProId() {
+        return proId;
     }
 
-    public void setProid(int proid) {
-        this.proid = proid;
+    public void setProId(int proId) {
+        this.proId = proId;
     }
 
     public int getQty() {

@@ -9,16 +9,16 @@ import javax.persistence.Id;
 public class Products {
 
     @Id
-    int proid;
-    String name;
-    double price;
+    private int proId;
+    private String name;
+    private double price;
 
-    public int getProid() {
-        return proid;
+    public int getProId() {
+        return proId;
     }
 
-    public void setProid(int proid) {
-        this.proid = proid;
+    public void setProId(int proid) {
+        this.proId = proid;
     }
 
     public String getName() {

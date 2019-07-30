@@ -3,16 +3,16 @@ package com.example.springmvcapp.dto;
 import java.util.List;
 
 public class OrderDTO {
-    int ordid;
-    double amount;
-    List<ItemObject> orderitems;
+    private int ordId;
+    private double amount;
+    private List<ItemObject> orderItems;
 
-    public int getOrdid() {
-        return ordid;
+    public int getOrdId() {
+        return ordId;
     }
 
-    public void setOrdid(int ordid) {
-        this.ordid = ordid;
+    public void setOrdId(int ordId) {
+        this.ordId = ordId;
     }
 
     public double getAmount() {
@@ -23,11 +23,11 @@ public class OrderDTO {
         this.amount = amount;
     }
 
-    public List<ItemObject> getOrderitems() {
-        return orderitems;
+    public List<ItemObject> getOrderItems() {
+        return orderItems;
     }
 
-    public void setOrderitems(List<ItemObject> orderitems) {
-        this.orderitems = orderitems;
+    public void setOrderItems(List<ItemObject> orderItems) {
+        this.orderItems = orderItems;
     }
 }

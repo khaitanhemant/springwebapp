@@ -16,16 +16,14 @@ public class OrderItemService {
     @Autowired
     private OrderItemRepository orderItemRepository;
 
-    public List<OrderItems> getallOrderItems()
+    public List<OrderItems> getAllOrderItems()
     {
         return orderItemRepository.findAll();
     }
 
-    public Optional<OrderItems> getorderItem(Integer id)
+    public Optional<OrderItems> getOrderItem(Integer id)
     {
         return orderItemRepository.findById(id);
     }
-
-
 
 }

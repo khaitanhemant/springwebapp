@@ -2,6 +2,8 @@ package com.example.springmvcapp.controller;
 
 import com.example.springmvcapp.dto.OrderCreateDTO;
 import com.example.springmvcapp.dto.OrderDTO;
+import com.example.springmvcapp.dto.OrderResponseDTO;
+import com.example.springmvcapp.dto.ProductResponseDTO;
 import com.example.springmvcapp.model.OrderItems;
 import com.example.springmvcapp.model.Products;
 import com.example.springmvcapp.service.OrderItemService;
@@ -36,28 +38,28 @@ public class OrderController {
     }
 
     @RequestMapping("/order/{id}")
-    public OrderDTO returnOrder(@PathVariable int id) { return orderService.getOrder(id); }
+    public OrderResponseDTO returnOrder(@PathVariable int id) { return orderService.getOrder(id); }
 
     @RequestMapping("/product/{id}")
-    public Optional<Products> returnProduct(@PathVariable int id)
+    public ProductResponseDTO returnProduct(@PathVariable int id)
     {
         return productService.getProduct(id);
     }
 
     @RequestMapping("/orderitem/{id}")
-    public Optional<OrderItems> returnorderItem(@PathVariable Integer id){ return orderItemService.getorderItem(id); }
+    public Optional<OrderItems> returnOrderItem(@PathVariable Integer id){ return orderItemService.getOrderItem(id); }
 
     @RequestMapping("/orders")
-    public List<OrderDTO> returnallorders(){ return orderService.getallOrders();}
+    public List<OrderDTO> returnAllOrders(){ return orderService.getAllOrders();}
 
     @RequestMapping("/products")
-    public List<Products> returnallproducts()
+    public List<Products> returnAllProducts()
     {
-        return productService.getallProducts();
+        return productService.getAllProducts();
     }
 
     @RequestMapping("/orderitems")
-    public List<OrderItems> returnallorderitems(){ return orderItemService.getallOrderItems();}
+    public List<OrderItems> returnAllOrderItems(){ return orderItemService.getAllOrderItems();}
 
     @RequestMapping(value = "/order/create", method = RequestMethod.POST)
     public String createOrder(@RequestBody OrderCreateDTO order){return orderService.createOrder(order);}

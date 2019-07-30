@@ -12,10 +12,10 @@ public class OrderItems {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int id;
-    public int ordid;
-    public int proid;
-    public int qty;
+    private int id;
+    private int ordId;
+    private int proId;
+    private int qty;
 
     public int getId() {
         return id;
@@ -25,18 +25,18 @@ public class OrderItems {
         this.id = id;
     }
 
-    public int getOrdid() {
-        return ordid;
+    public int getOrdId() {
+        return ordId;
     }
 
-    public void setOrdid(int ordid) { this.ordid = ordid; }
+    public void setOrdId(int ordId) { this.ordId = ordId; }
 
-    public int getProid() {
-        return proid;
+    public int getProId() {
+        return proId;
     }
 
-    public void setProid(int proid) {
-        this.proid = proid;
+    public void setProId(int proId) {
+        this.proId = proId;
     }
 
     public int getQty() {

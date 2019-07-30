@@ -1,5 +1,6 @@
 package com.example.springmvcapp.service;
 
+import com.example.springmvcapp.dto.ProductResponseDTO;
 import com.example.springmvcapp.model.Products;
 import com.example.springmvcapp.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +16,29 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public Optional<Products> getProduct(int id)
+    public ProductResponseDTO getProduct(int id)
     {
-        return productRepository.findById(id);
+        Optional<Products> product=productRepository.findById(id);
+        ProductResponseDTO resProduct=new ProductResponseDTO();
+        if(product.isPresent())
+        {
+            resProduct.setProduct(product.get());
+            resProduct.setMessage("Success! Product found.");
+            return resProduct;
+        }
+        else{
+            resProduct.setMessage("Error: Product not found!");
+            return resProduct;
+        }
     }
 
-    public List<Products> getallProducts()
+    public List<Products> getAllProducts()
     {
         return productRepository.findAll();
     }
 
     public String createProduct(Products product){
         productRepository.save(product);
-        return "Product "+product.getProid()+" has been successfully added";
+        return "Product "+product.getProId()+" has been successfully added";
     }
 }

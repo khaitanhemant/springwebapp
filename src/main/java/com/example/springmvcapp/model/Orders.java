@@ -1,8 +1,5 @@
 package com.example.springmvcapp.model;
 
-import org.hibernate.annotations.GenericGenerator;
-import sun.rmi.rmic.Generator;
-
 import javax.persistence.*;
 
 
@@ -10,15 +7,15 @@ import javax.persistence.*;
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int ordid;
-    public double amount;
+    private int ordId;
+    private double amount;
 
-    public int getOrdid() {
-        return ordid;
+    public int getOrdId() {
+        return ordId;
     }
 
-    public void setOrdid(int ordid) {
-        this.ordid = ordid;
+    public void setOrdId(int ordId) {
+        this.ordId = ordId;
     }
 
     public double getAmount() {
