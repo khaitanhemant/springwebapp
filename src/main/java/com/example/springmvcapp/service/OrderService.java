@@ -25,6 +25,23 @@ public class OrderService {
     @Autowired
     private ProductRepository productRepository;
 
+    public List<ItemObject> orderItemsCommon(List<OrderItems> orderItems)
+    {
+        List<ItemObject> items = new ArrayList<>();
+        for (OrderItems oi : orderItems) {
+            ItemObject item = new ItemObject();
+            item.setProId(oi.getProId());
+            item.setQty(oi.getQty());
+            Optional<Products> product = productRepository.findById(oi.getProId());
+            if (product.isPresent()) {
+                item.setName(product.get().getName());
+                item.setPrice(product.get().getPrice());
+                items.add(item);
+            }
+        }
+        return items;
+    }
+
 
     public OrderResponseDTO getOrder(int id) {
         OrderResponseDTO resObj = new OrderResponseDTO();
@@ -34,16 +51,7 @@ public class OrderService {
             obj.setOrdId(order.get().getOrdId());
             obj.setAmount(order.get().getAmount());
             List<OrderItems> orderItems = orderItemRepository.findByOrdId(id);
-            List<ItemObject> items = new ArrayList<ItemObject>();
-            for (OrderItems oi : orderItems) {
-                ItemObject item = new ItemObject();
-                item.setProId(oi.getProId());
-                item.setQty(oi.getQty());
-                Optional<Products> product = productRepository.findById(oi.getProId());
-                item.setName(product.get().getName());
-                item.setPrice(product.get().getPrice());
-                items.add(item);
-            }
+            List<ItemObject> items=orderItemsCommon(orderItems);
             obj.setOrderItems(items);
             resObj.setOrder(obj);
             resObj.setMessage("Success! Order found.");
@@ -62,16 +70,7 @@ public class OrderService {
             obj.setOrdId(order.getOrdId());
             obj.setAmount(order.getAmount());
             List<OrderItems> orderItems = orderItemRepository.findByOrdId(order.getOrdId());
-            List<ItemObject> items = new ArrayList<>();
-            for (OrderItems oi : orderItems) {
-                ItemObject item = new ItemObject();
-                item.setProId(oi.getProId());
-                item.setQty(oi.getQty());
-                Optional<Products> product = productRepository.findById(oi.getProId());
-                item.setName(product.get().getName());
-                item.setPrice(product.get().getPrice());
-                items.add(item);
-            }
+            List<ItemObject> items = orderItemsCommon(orderItems);
             obj.setOrderItems(items);
             objs.add(obj);
         }
@@ -97,7 +96,9 @@ public class OrderService {
         }
         for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
             Optional<Products> product = productRepository.findById(entry.getKey());
-            or.setAmount(or.getAmount() + (entry.getValue() * product.get().getPrice()));
+            if (product.isPresent()) {
+                or.setAmount(or.getAmount() + (entry.getValue() * product.get().getPrice()));
+            }
         }
         orderRepository.save(or);
         List<OrderItems> ois = new ArrayList<>();
@@ -111,16 +112,4 @@ public class OrderService {
         orderItemRepository.saveAll(ois);
         return "Your order " + or.getOrdId() + " has been created!";
     }
-
-//    public OrderCreateDTO createTest(OrderCreateDTO order)
-//    {
-//        List<ItemObject> orderItems=order.getOrderItems();
-//        for(ItemObject orderItem:orderItems)
-//        {
-//            orderItem.setQty(Integer.parseInt(Integer.toString(orderItem.getQty()).replaceAll("[^0-9-]", "")));
-//        }
-//        return order;
-//    }
-
-
 }

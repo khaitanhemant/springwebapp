@@ -11,6 +11,7 @@ public class SpringmvcappApplicationTests {
 
 	@Test
 	public void contextLoads() {
+		//not required at the moment
 	}
 
 }
