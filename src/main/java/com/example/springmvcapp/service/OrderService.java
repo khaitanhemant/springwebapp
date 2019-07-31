@@ -83,7 +83,7 @@ public class OrderService {
         Orders or = new Orders();
         or.setAmount(0);
         List<ItemObject> orderItems = order.getOrderItems();
-        HashMap<Integer,Integer> map=new HashMap<>();
+        HashMap<Integer, Integer> map = new HashMap<>();
         for (ItemObject orderItem : orderItems) {
             if (orderItem.getQty() > 0) {
                 if (!map.containsKey(orderItem.getProId())) {
@@ -91,20 +91,17 @@ public class OrderService {
                 } else {
                     map.replace(orderItem.getProId(), map.get(orderItem.getProId()) + orderItem.getQty());
                 }
-            }
-            else
-            {
+            } else {
                 return "Invalid quantity!";
             }
         }
-        for(Map.Entry<Integer,Integer> entry : map.entrySet())
-        {
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
             Optional<Products> product = productRepository.findById(entry.getKey());
             or.setAmount(or.getAmount() + (entry.getValue() * product.get().getPrice()));
         }
         orderRepository.save(or);
         List<OrderItems> ois = new ArrayList<>();
-        for (Map.Entry<Integer,Integer> entry : map.entrySet()) {
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
             OrderItems item = new OrderItems();
             item.setOrdId(or.getOrdId());
             item.setProId(entry.getKey());
@@ -114,6 +111,16 @@ public class OrderService {
         orderItemRepository.saveAll(ois);
         return "Your order " + or.getOrdId() + " has been created!";
     }
+
+//    public OrderCreateDTO createTest(OrderCreateDTO order)
+//    {
+//        List<ItemObject> orderItems=order.getOrderItems();
+//        for(ItemObject orderItem:orderItems)
+//        {
+//            orderItem.setQty(Integer.parseInt(Integer.toString(orderItem.getQty()).replaceAll("[^0-9-]", "")));
+//        }
+//        return order;
+//    }
 
 
 }
