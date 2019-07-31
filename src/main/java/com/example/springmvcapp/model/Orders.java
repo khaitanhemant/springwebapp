@@ -2,9 +2,9 @@ package com.example.springmvcapp.model;
 
 import javax.persistence.*;
 
-
+// Model name should be singular - Done (Cant for orders because keyword in MySQL)
+// Amount should be bigdecimal
 @Entity
-// Model name should be singular
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

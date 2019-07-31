@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class Products {
+public class Product {
 
     @Id
     // TODO generation type

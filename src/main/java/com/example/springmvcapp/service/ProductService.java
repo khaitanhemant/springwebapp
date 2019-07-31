@@ -1,7 +1,7 @@
 package com.example.springmvcapp.service;
 
 import com.example.springmvcapp.dto.ProductResponseDTO;
-import com.example.springmvcapp.model.Products;
+import com.example.springmvcapp.model.Product;
 import com.example.springmvcapp.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,28 +18,26 @@ public class ProductService {
 
     public ProductResponseDTO getProduct(int id)
     {
-        Optional<Products> product=productRepository.findById(id);
+        Optional<Product> product=productRepository.findById(id);
         ProductResponseDTO resProduct=new ProductResponseDTO();
         if(product.isPresent())
         {
             resProduct.setProduct(product.get());
-            resProduct.setMessage("Success! Product found.");
             return resProduct;
         }
         else{
-            resProduct.setMessage("Error: Product not found!");
-            return resProduct;
+            return null;
         }
     }
 
-    public List<Products> getAllProducts()
+    public List<Product> getAllProducts()
     {
         return productRepository.findAll();
     }
 
-    // TODO should return ID
-    public String createProduct(Products product){
+    // TODO should return ID - Done
+    public Product createProduct(Product product){
         productRepository.save(product);
-        return "Product "+product.getProId()+" has been successfully added";
+        return product;
     }
 }
