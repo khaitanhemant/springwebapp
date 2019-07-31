@@ -10,6 +10,7 @@ public class OrderItems {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // TODO make ID long
     private int id;
     private int ordId;
     private int proId;

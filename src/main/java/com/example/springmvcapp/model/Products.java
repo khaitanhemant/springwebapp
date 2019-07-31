@@ -9,8 +9,10 @@ import javax.persistence.Id;
 public class Products {
 
     @Id
+    // TODO generation type
     private int proId;
     private String name;
+    // TODO use bigdecimal
     private double price;
 
     public int getProId() {

@@ -20,13 +20,16 @@ public class OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    // TODO use service
     @Autowired
     private OrderItemRepository orderItemRepository;
+
+    // TODO Use service
     @Autowired
     private ProductRepository productRepository;
 
-    public List<ItemObject> orderItemsCommon(List<OrderItems> orderItems)
-    {
+    public List<ItemObject> orderItemsCommon(List<OrderItems> orderItems) {
         List<ItemObject> items = new ArrayList<>();
         for (OrderItems oi : orderItems) {
             ItemObject item = new ItemObject();
@@ -43,15 +46,17 @@ public class OrderService {
     }
 
 
+    // TODO this method should return list of orders
     public OrderResponseDTO getOrder(int id) {
         OrderResponseDTO resObj = new OrderResponseDTO();
         Optional<Orders> order = orderRepository.findById(id);
+        // TODO this check is wrong
         if (order.isPresent()) {
             OrderDTO obj = new OrderDTO();
             obj.setOrdId(order.get().getOrdId());
             obj.setAmount(order.get().getAmount());
             List<OrderItems> orderItems = orderItemRepository.findByOrdId(id);
-            List<ItemObject> items=orderItemsCommon(orderItems);
+            List<ItemObject> items = orderItemsCommon(orderItems);
             obj.setOrderItems(items);
             resObj.setOrder(obj);
             resObj.setMessage("Success! Order found.");
@@ -62,6 +67,7 @@ public class OrderService {
         }
     }
 
+    // TODO dont call db in a loop
     public List<OrderDTO> getAllOrders() {
         List<Orders> orders = orderRepository.findAll();
         List<OrderDTO> objs = new ArrayList<>();
@@ -78,10 +84,13 @@ public class OrderService {
 
     }
 
+    // TODO this method should not return string. Only ID.
     public String createOrder(OrderCreateDTO order) {
+
         Orders or = new Orders();
         or.setAmount(0);
         List<ItemObject> orderItems = order.getOrderItems();
+        // TODO check if order is empty or null
         HashMap<Integer, Integer> map = new HashMap<>();
         for (ItemObject orderItem : orderItems) {
             if (orderItem.getQty() > 0) {
@@ -101,6 +110,8 @@ public class OrderService {
             }
         }
         orderRepository.save(or);
+
+        // TODO make a separate method to do this
         List<OrderItems> ois = new ArrayList<>();
         for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
             OrderItems item = new OrderItems();

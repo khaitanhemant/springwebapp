@@ -15,12 +15,14 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    //TODO remove this
     @RequestMapping("/")
     public String home()
     {
         return "Welcome to my first spring web app";
     }
 
+    // TODO make /order at controller level
     @RequestMapping("/order/{id}")
     public OrderResponseDTO returnOrder(@PathVariable int id) { return orderService.getOrder(id); }
 

@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 
 @Entity
+// Model name should be singular
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

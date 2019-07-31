@@ -19,6 +19,7 @@ public class OrderItemController {
     @RequestMapping("/orderitem/{id}")
     public Optional<OrderItems> returnOrderItem(@PathVariable Integer id){ return orderItemService.getOrderItem(id); }
 
+    // TODO make consistent mapping
     @RequestMapping("/orderitems")
     public List<OrderItems> returnAllOrderItems(){ return orderItemService.getAllOrderItems();}
 

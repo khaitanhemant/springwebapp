@@ -37,6 +37,7 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    // TODO should return ID
     public String createProduct(Products product){
         productRepository.save(product);
         return "Product "+product.getProId()+" has been successfully added";
