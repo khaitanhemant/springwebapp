@@ -26,7 +26,7 @@ public class OrderService {
 
     private void getTotalAmount(OrderEntity or, Map<Long, Integer> map) {
         Set<Long> i = map.keySet();
-        List<Long> ids=new ArrayList<>(i);
+        List<Long> ids = new ArrayList<>(i);
         List<Product> products = productService.getAllProductsById(ids);
         for (Product product : products) {
             if (product != null) {
@@ -47,22 +47,16 @@ public class OrderService {
         }
     }
 
-    private List<OrderItem> addToMap(Map<Long, Integer> map, List<OrderItem> orderItems) {
-        if (orderItems != null) {
-            for (OrderItem orderItem : orderItems) {
-                if (orderItem.getQty() > 0) {
-                    if (!map.containsKey(orderItem.getProId())) {
-                        map.put(orderItem.getProId(), orderItem.getQty());
-                    } else {
-                        map.replace(orderItem.getProId(), map.get(orderItem.getProId()) + orderItem.getQty());
-                    }
+    private void addToMap(Map<Long, Integer> map, List<OrderItem> orderItems) {
+        for (OrderItem orderItem : orderItems) {
+            if (orderItem.getQty() > 0) {
+                if (!map.containsKey(orderItem.getProId())) {
+                    map.put(orderItem.getProId(), orderItem.getQty());
                 } else {
-                    return null;
+                    map.replace(orderItem.getProId(), map.get(orderItem.getProId()) + orderItem.getQty());
                 }
             }
-            return orderItems;
         }
-        return null;
     }
 
     private List<ItemResponseDTO> createItemResponseList(List<OrderItem> orderItems) {
@@ -71,7 +65,7 @@ public class OrderService {
         for (OrderItem orderItem : orderItems) {
             i.add(orderItem.getProId());
         }
-        List<Long> ids=new ArrayList<>(i);
+        List<Long> ids = new ArrayList<>(i);
         final List<Product> products = productService.getAllProductsById(ids);
         final Map<Long, Integer> map = new HashMap<>();
         addToMap(map, orderItems);
@@ -86,24 +80,40 @@ public class OrderService {
         return items;
     }
 
-    private List<OrderResponseDTO> getOrderResponseList(List<OrderEntity> orders,List<OrderItem> orderItems) {
+    private List<OrderResponseDTO> getOrderResponseList(List<OrderEntity> orders, List<OrderItem> orderItems) {
+        if (orders.isEmpty()) {
+            return Collections.emptyList();
+        }
         final List<OrderResponseDTO> resObjs = new ArrayList<>();
-        if (!orders.isEmpty()) {
-            final Map<Long, List<OrderItem>> orderIdMap = new HashMap<>();
-            for (OrderItem orderItem : orderItems) {
-                addToMap(orderIdMap, orderItem.getOrdId(), orderItem);
-            }
-            for (OrderEntity order : orders) {
-                final OrderResponseDTO resObj = new OrderResponseDTO();
-                resObj.setOrdId(order.getOrdId());
-                resObj.setAmount(order.getAmount());
-                final List<ItemResponseDTO> items = createItemResponseList(orderIdMap.get(order.getOrdId()));
-                resObj.setOrderItems(items);
-                resObj.setOrderDate(order.getOrderDate().toString());
-                resObjs.add(resObj);
-            }
+        final Map<Long, List<OrderItem>> orderIdMap = new HashMap<>();
+        for (OrderItem orderItem : orderItems) {
+            addToMap(orderIdMap, orderItem.getOrdId(), orderItem);
+        }
+        for (OrderEntity order : orders) {
+            final OrderResponseDTO resObj = new OrderResponseDTO();
+            resObj.setOrdId(order.getOrdId());
+            resObj.setAmount(order.getAmount());
+            final List<ItemResponseDTO> items = createItemResponseList(orderIdMap.get(order.getOrdId()));
+            resObj.setOrderItems(items);
+            resObj.setOrderDate(order.getOrderDate().toString());
+            resObjs.add(resObj);
         }
         return resObjs;
+    }
+
+    private boolean validateOrder(OrderResponseDTO order)
+    {
+        if(order.getOrderItems().isEmpty()){
+            return false;
+        }
+        for(ItemResponseDTO orderItem:order.getOrderItems())
+        {
+            if(orderItem.getQty()!=0)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public List<OrderResponseDTO> getAllOrders() {
@@ -119,26 +129,28 @@ public class OrderService {
     }
 
     public OrderEntity createOrder(OrderResponseDTO order) {
-        final List<ItemResponseDTO> orderItems = order.getOrderItems();
-        final OrderEntity or = new OrderEntity();
-        final List<OrderItem> ois = new ArrayList<>();
-        or.setAmount(BigDecimal.valueOf(0));
+        final List<ItemResponseDTO> itemResponseDTOS = order.getOrderItems();
+        final OrderEntity orderEntity = new OrderEntity();
+        if(!validateOrder(order)){
+            return null;
+        }
+        final List<OrderItem> orderItems = new ArrayList<>();
+        orderEntity.setAmount(BigDecimal.valueOf(0));
         String d = order.getOrderDate();
         LocalDate date = LocalDate.parse(d);
-        or.setOrderDate(date);
-        for (ItemResponseDTO orderItem : orderItems) {
-            OrderItem oi = new OrderItem();
-            oi.setProId(orderItem.getProId());
-            oi.setQty(orderItem.getQty());
-            ois.add(oi);
+        orderEntity.setOrderDate(date);
+        for (ItemResponseDTO itemResponseDTO : itemResponseDTOS) {
+            OrderItem newOrderItem = new OrderItem();
+            newOrderItem.setProId(itemResponseDTO.getProId());
+            newOrderItem.setQty(itemResponseDTO.getQty());
+            orderItems.add(newOrderItem);
         }
         final Map<Long, Integer> map = new HashMap<>();
-        if (addToMap(map, ois) != null) {
-            getTotalAmount(or, map);
-            orderRepository.save(or);
-            orderItemService.createOrderItemEntries(or, map);
-        }
-        return or;
+        addToMap(map, orderItems);
+        getTotalAmount(orderEntity, map);
+        orderRepository.save(orderEntity);
+        orderItemService.createOrderItemEntries(orderEntity, map);
+        return orderEntity;
     }
 
     public List<OrderResponseDTO> getHistory(String from, String to) {

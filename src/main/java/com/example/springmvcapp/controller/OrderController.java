@@ -3,13 +3,10 @@ package com.example.springmvcapp.controller;
 import com.example.springmvcapp.dto.GetOrderDTO;
 import com.example.springmvcapp.dto.OrderResponseDTO;
 import com.example.springmvcapp.model.OrderEntity;
-import com.example.springmvcapp.model.OrderItem;
 import com.example.springmvcapp.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +22,7 @@ public class OrderController {
         GetOrderDTO response = new GetOrderDTO();
         List<OrderResponseDTO> orders = orderService.getAllOrders();
         response.setOrders(orders);
-        if (response.getOrders().isEmpty()) {
+        if (orders.isEmpty()) {
             response.setMessage("No orders exist");
         } else {
             response.setMessage("Returned all orders");
@@ -68,9 +65,9 @@ public class OrderController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public String createOrder(@RequestBody OrderResponseDTO order) {
-        final OrderEntity or = orderService.createOrder(order);
-        if (or != null) {
-            return "Your order with Order ID :" + or.getOrdId() + " has been created";
+        final OrderEntity order1 = orderService.createOrder(order);
+        if (order1 != null) {
+            return "Your order with Order ID :" + order1.getOrdId() + " has been created";
         } else {
             return "Error : Order can't be created.";
         }

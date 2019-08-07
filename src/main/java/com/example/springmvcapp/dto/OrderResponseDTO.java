@@ -1,7 +1,6 @@
 package com.example.springmvcapp.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 public class OrderResponseDTO {
@@ -9,8 +8,6 @@ public class OrderResponseDTO {
     private BigDecimal amount;
     private List<ItemResponseDTO> orderItems;
     private String orderDate;
-
-
 
     public long getOrdId() {
         return ordId;
