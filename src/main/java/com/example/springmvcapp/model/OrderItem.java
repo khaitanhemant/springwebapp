@@ -10,31 +10,32 @@ public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // TODO make ID long
-    private int id;
-    private int ordId;
-    private int proId;
+    private long id;
+    private long ordId;
+    private long proId;
     private int qty;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getOrdId() {
+    public long getOrdId() {
         return ordId;
     }
 
-    public void setOrdId(int ordId) { this.ordId = ordId; }
+    public void setOrdId(long ordId) {
+        this.ordId = ordId;
+    }
 
-    public int getProId() {
+    public long getProId() {
         return proId;
     }
 
-    public void setProId(int proId) {
+    public void setProId(long proId) {
         this.proId = proId;
     }
 

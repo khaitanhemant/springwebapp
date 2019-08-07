@@ -1,107 +1,55 @@
 package com.example.springmvcapp.service;
 
-import com.example.springmvcapp.dto.*;
+import com.example.springmvcapp.dto.ItemResponseDTO;
+import com.example.springmvcapp.dto.OrderResponseDTO;
+import com.example.springmvcapp.model.OrderEntity;
 import com.example.springmvcapp.model.OrderItem;
-import com.example.springmvcapp.model.Orders;
+import com.example.springmvcapp.model.Product;
 import com.example.springmvcapp.repository.OrderRepository;
-import com.example.springmvcapp.repository.ProductRepository;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
 public class OrderService {
-
     @Autowired
     private OrderRepository orderRepository;
-
-    // TODO use service - Done
     @Autowired
     private OrderItemService orderItemService;
-
-    // TODO Use service - Done
-
-
     @Autowired
     private ProductService productService;
 
-    public List<OrderItem> createOrderItemEntries(Orders or, Map<Integer,Integer> map)
-    {
-        List<OrderItem> ois=new ArrayList<>();
-        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-            OrderItem item = new OrderItem();
-            item.setOrdId(or.getOrdId());
-            item.setProId(entry.getKey());
-            item.setQty(entry.getValue());
-            ois.add(item);
-        }
-        return ois;
-    }
 
-    public List<ItemObject> orderItemsCommon(List<OrderItem> orderItems) {
-        List<ItemObject> items = new ArrayList<>();
-        for (OrderItem oi : orderItems) {
-            ItemObject item = new ItemObject();
-            item.setProId(oi.getProId());
-            item.setQty(oi.getQty());
-            ProductResponseDTO product = productService.getProduct(oi.getProId());
-            if (product!=null) {
-                item.setName(product.getProduct().getName());
-                item.setPrice(product.getProduct().getPrice());
-                items.add(item);
+    private void getTotalAmount(OrderEntity or, Map<Long, Integer> map) {
+        Set<Long> i = map.keySet();
+        List<Long> ids=new ArrayList<>(i);
+        List<Product> products = productService.getAllProductsById(ids);
+        for (Product product : products) {
+            if (product != null) {
+                or.setAmount(or.getAmount().add(product.getPrice().multiply(BigDecimal.valueOf(map.get(product.getProId())))));
             }
         }
-        return items;
+
     }
 
-
-    // TODO this method should return list of orders -- Get a single order by ID.
-    public OrderResponseDTO getOrder(int id) {
-        OrderResponseDTO resObj = new OrderResponseDTO();
-        Optional<Orders> order = orderRepository.findById(id);
-        // TODO this check is wrong -- Guess its right. Only getting a single order.
-        if (order.isPresent()) {
-            OrderDTO obj = new OrderDTO();
-            obj.setOrdId(order.get().getOrdId());
-            obj.setAmount(order.get().getAmount());
-            List<OrderItem> orderItems = orderItemService.getAllOrderItemsByOrdId(id);
-            List<ItemObject> items = orderItemsCommon(orderItems);
-            obj.setOrderItems(items);
-            resObj.setOrder(obj);
-            return resObj;
+    private void addToMap(Map<Long, List<OrderItem>> map, Long ordId, OrderItem orderItem) {
+        if (!map.containsKey(ordId)) {
+            List<OrderItem> items = new ArrayList<>();
+            items.add(orderItem);
+            map.put(ordId, items);
         } else {
-            return resObj;
+            List<OrderItem> orderItems = map.get(ordId);
+            orderItems.add(orderItem);
         }
     }
 
-    // TODO dont call db in a loop --??
-    public List<OrderDTO> getAllOrders() {
-        List<Orders> orders = orderRepository.findAll();
-        List<OrderDTO> objs = new ArrayList<>();
-        for (Orders order : orders) {
-            OrderDTO obj = new OrderDTO();
-            obj.setOrdId(order.getOrdId());
-            obj.setAmount(order.getAmount());
-            List<OrderItem> orderItems = orderItemService.getAllOrderItemsByOrdId(order.getOrdId());
-            List<ItemObject> items = orderItemsCommon(orderItems);
-            obj.setOrderItems(items);
-            objs.add(obj);
-        }
-        return objs;
-
-    }
-
-    // TODO this method should not return string. Only ID. - Done
-    public Orders createOrder(OrderCreateDTO order) {
-
-        Orders or = new Orders();
-        or.setAmount(0);
-        List<ItemObject> orderItems = order.getOrderItems();
-        HashMap<Integer, Integer> map = new HashMap<>();
-        // TODO check if order is empty or null - Done
-        if(orderItems!=null) {
-            for (ItemObject orderItem : orderItems) {
+    private List<OrderItem> addToMap(Map<Long, Integer> map, List<OrderItem> orderItems) {
+        if (orderItems != null) {
+            for (OrderItem orderItem : orderItems) {
                 if (orderItem.getQty() > 0) {
                     if (!map.containsKey(orderItem.getProId())) {
                         map.put(orderItem.getProId(), orderItem.getQty());
@@ -112,23 +60,101 @@ public class OrderService {
                     return null;
                 }
             }
+            return orderItems;
         }
-        else
-        {
-            return null;
+        return null;
+    }
+
+    private List<ItemResponseDTO> createItemResponseList(List<OrderItem> orderItems) {
+        final List<ItemResponseDTO> items = new ArrayList<>();
+        Set<Long> i = new HashSet<>();
+        for (OrderItem orderItem : orderItems) {
+            i.add(orderItem.getProId());
         }
-        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-            ProductResponseDTO product = productService.getProduct(entry.getKey());
-            if (product!=null) {
-                or.setAmount(or.getAmount() + (entry.getValue() * product.getProduct().getPrice()));
+        List<Long> ids=new ArrayList<>(i);
+        final List<Product> products = productService.getAllProductsById(ids);
+        final Map<Long, Integer> map = new HashMap<>();
+        addToMap(map, orderItems);
+        for (Product product : products) {
+            final ItemResponseDTO item = new ItemResponseDTO();
+            item.setProId(product.getProId());
+            item.setQty(map.get(product.getProId()));
+            item.setName(product.getName());
+            item.setPrice(product.getPrice());
+            items.add(item);
+        }
+        return items;
+    }
+
+    private List<OrderResponseDTO> getOrderResponseList(List<OrderEntity> orders,List<OrderItem> orderItems) {
+        final List<OrderResponseDTO> resObjs = new ArrayList<>();
+        if (!orders.isEmpty()) {
+            final Map<Long, List<OrderItem>> orderIdMap = new HashMap<>();
+            for (OrderItem orderItem : orderItems) {
+                addToMap(orderIdMap, orderItem.getOrdId(), orderItem);
+            }
+            for (OrderEntity order : orders) {
+                final OrderResponseDTO resObj = new OrderResponseDTO();
+                resObj.setOrdId(order.getOrdId());
+                resObj.setAmount(order.getAmount());
+                final List<ItemResponseDTO> items = createItemResponseList(orderIdMap.get(order.getOrdId()));
+                resObj.setOrderItems(items);
+                resObj.setOrderDate(order.getOrderDate().toString());
+                resObjs.add(resObj);
             }
         }
-        orderRepository.save(or);
+        return resObjs;
+    }
 
-        // TODO make a separate method to do this - Done
-        List<OrderItem> ois = createOrderItemEntries(or,map);
+    public List<OrderResponseDTO> getAllOrders() {
+        final List<OrderEntity> orders = orderRepository.findAll();
+        final List<OrderItem> orderItems = orderItemService.getAllOrderItems();
+        return getOrderResponseList(orders, orderItems);
+    }
 
-        orderItemService.saveAllOrderItems(ois);
+    public List<OrderResponseDTO> getOrdersByIds(List<Long> ids) {
+        final List<OrderEntity> orders = orderRepository.findAllById(ids);
+        final List<OrderItem> orderItems = orderItemService.getAllOrderItemsByOrdId(ids);
+        return getOrderResponseList(orders, orderItems);
+    }
+
+    public OrderEntity createOrder(OrderResponseDTO order) {
+        final List<ItemResponseDTO> orderItems = order.getOrderItems();
+        final OrderEntity or = new OrderEntity();
+        final List<OrderItem> ois = new ArrayList<>();
+        or.setAmount(BigDecimal.valueOf(0));
+        String d = order.getOrderDate();
+        LocalDate date = LocalDate.parse(d);
+        or.setOrderDate(date);
+        for (ItemResponseDTO orderItem : orderItems) {
+            OrderItem oi = new OrderItem();
+            oi.setProId(orderItem.getProId());
+            oi.setQty(orderItem.getQty());
+            ois.add(oi);
+        }
+        final Map<Long, Integer> map = new HashMap<>();
+        if (addToMap(map, ois) != null) {
+            getTotalAmount(or, map);
+            orderRepository.save(or);
+            orderItemService.createOrderItemEntries(or, map);
+        }
         return or;
+    }
+
+    public List<OrderResponseDTO> getHistory(String from, String to) {
+        LocalDate fromDate = LocalDate.parse(from);
+        LocalDate toDate = LocalDate.parse(to);
+        LocalDate toDatePlusOne = toDate.plusDays(1);
+        List<OrderEntity> orders;
+        if (fromDate.isAfter(toDatePlusOne)) {
+            return null;
+        } else {
+            orders = orderRepository.getAllByOrderDateBetween(fromDate, toDatePlusOne);
+            List<Long> ids = new ArrayList<>();
+            for (OrderEntity order : orders) {
+                ids.add(order.getOrdId());
+            }
+            return getOrdersByIds(ids);
+        }
     }
 }

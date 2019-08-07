@@ -4,22 +4,23 @@ package com.example.springmvcapp.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.math.BigDecimal;
 
 @Entity
 public class Product {
 
     @Id
     // TODO generation type
-    private int proId;
+    private long proId;
     private String name;
     // TODO use bigdecimal
-    private double price;
+    private BigDecimal price;
 
-    public int getProId() {
+    public long getProId() {
         return proId;
     }
 
-    public void setProId(int proid) {
+    public void setProId(long proid) {
         this.proId = proid;
     }
 
@@ -31,11 +32,11 @@ public class Product {
         this.name = name;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 }

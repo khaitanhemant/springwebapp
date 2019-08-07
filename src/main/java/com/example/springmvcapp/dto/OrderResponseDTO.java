@@ -1,22 +1,46 @@
 package com.example.springmvcapp.dto;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
 public class OrderResponseDTO {
-    private OrderDTO order;
-    private String message;
+    private long ordId;
+    private BigDecimal amount;
+    private List<ItemResponseDTO> orderItems;
+    private String orderDate;
 
-    public OrderDTO getOrder() {
-        return order;
+
+
+    public long getOrdId() {
+        return ordId;
     }
 
-    public void setOrder(OrderDTO order) {
-        this.order = order;
+    public void setOrdId(long ordId) {
+        this.ordId = ordId;
     }
 
-    public String getMessage() {
-        return message;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public List<ItemResponseDTO> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<ItemResponseDTO> orderItems) {
+        this.orderItems = orderItems;
+    }
+
+    public String getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(String orderDate) {
+        this.orderDate = orderDate;
     }
 }

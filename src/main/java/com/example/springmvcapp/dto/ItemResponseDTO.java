@@ -1,16 +1,18 @@
 package com.example.springmvcapp.dto;
 
-public class ItemObject {
-    private int proId;
+import java.math.BigDecimal;
+
+public class ItemResponseDTO {
+    private long proId;
     private String name;
-    private double price;
+    private BigDecimal price;
     private int qty;
 
-    public int getProId() {
+    public long getProId() {
         return proId;
     }
 
-    public void setProId(int proId) {
+    public void setProId(long proId) {
         this.proId = proId;
     }
 
@@ -30,11 +32,11 @@ public class ItemObject {
         this.name = name;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 }

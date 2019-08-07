@@ -1,13 +1,16 @@
 package com.example.springmvcapp.controller;
 
-import com.example.springmvcapp.dto.OrderCreateDTO;
-import com.example.springmvcapp.dto.OrderDTO;
+import com.example.springmvcapp.dto.GetOrderDTO;
 import com.example.springmvcapp.dto.OrderResponseDTO;
-import com.example.springmvcapp.model.Orders;
+import com.example.springmvcapp.model.OrderEntity;
+import com.example.springmvcapp.model.OrderItem;
 import com.example.springmvcapp.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -17,31 +20,60 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    //TODO remove this - done
-
-
-    // TODO make /order at controller level - done
-
-    @RequestMapping("/{id}")
-    public OrderResponseDTO returnOrder(@PathVariable int id) {
-        OrderResponseDTO resObj=orderService.getOrder(id);
-        if(resObj.getOrder()!=null)
-            resObj.setMessage("Success! Order found.");
-        else
-            resObj.setMessage("Error: Order does not exist!");
-        return resObj;
+    @RequestMapping("")
+    public GetOrderDTO returnAllOrders() {
+        GetOrderDTO response = new GetOrderDTO();
+        List<OrderResponseDTO> orders = orderService.getAllOrders();
+        response.setOrders(orders);
+        if (response.getOrders().isEmpty()) {
+            response.setMessage("No orders exist");
+        } else {
+            response.setMessage("Returned all orders");
+        }
+        return response;
     }
 
-    @RequestMapping("")
-    public List<OrderDTO> returnAllOrders(){ return orderService.getAllOrders();}
+    @RequestMapping("/{ids}")
+    public GetOrderDTO returnOrder(@PathVariable List<Long> ids) {
+        GetOrderDTO response = new GetOrderDTO();
+        response.setOrders(orderService.getOrdersByIds(ids));
+        List<Long> dupIds = new ArrayList<>(ids);
+        if (response.getOrders().isEmpty()) {
+            response.setMessage("No orders were found!");
+        } else if (response.getOrders().size() < dupIds.size()) {
+            for (OrderResponseDTO order : response.getOrders()) {
+                dupIds.remove(order.getOrdId());
+            }
+            response.setMessage("These orders were not found :" + dupIds.toString());
+        } else {
+            response.setMessage("All orders were found");
+        }
+        return response;
+    }
+
+    @RequestMapping(value = "/history")
+    public GetOrderDTO orderHistory(@RequestParam String from, @RequestParam String to) {
+        GetOrderDTO response = new GetOrderDTO();
+        List<OrderResponseDTO> orders = orderService.getHistory(from, to);
+        response.setOrders(orders);
+        if (response.getOrders() == null) {
+            response.setMessage("Invalid range");
+        } else if (response.getOrders().isEmpty()) {
+            response.setMessage("No orders found in the specified range");
+        } else {
+            response.setMessage("Viewing orders within the specified range");
+        }
+        return response;
+    }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public String createOrder(@RequestBody OrderCreateDTO order){
-        Orders or= orderService.createOrder(order);
-        if(or!=null)
-            return "Your order with Order ID :"+or.getOrdId()+" has been created";
-        else
+    public String createOrder(@RequestBody OrderResponseDTO order) {
+        final OrderEntity or = orderService.createOrder(order);
+        if (or != null) {
+            return "Your order with Order ID :" + or.getOrdId() + " has been created";
+        } else {
             return "Error : Order can't be created.";
+        }
     }
-
 }
+

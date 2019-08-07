@@ -2,16 +2,18 @@ package com.example.springmvcapp.dto;
 
 import com.example.springmvcapp.model.Product;
 
-public class ProductResponseDTO {
-    private Product product;
+import java.util.List;
+
+public class GetProductDTO {
+    private List<Product> products;
     private String message;
 
-    public Product getProduct() {
-        return product;
+    public List<Product> getProducts() {
+        return products;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 
     public String getMessage() {
