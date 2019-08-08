@@ -18,9 +18,9 @@ public class OrderController {
     private OrderService orderService;
 
     @RequestMapping("")
-    public GetOrderDTO returnAllOrders() {
+    public GetOrderDTO returnAllOrders(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "2") Integer pageSize) {
         GetOrderDTO response = new GetOrderDTO();
-        List<OrderResponseDTO> orders = orderService.getAllOrders();
+        List<OrderResponseDTO> orders = orderService.getAllOrders(pageNo,pageSize);
         response.setOrders(orders);
         if (orders.isEmpty()) {
             response.setMessage("No orders exist");
@@ -49,9 +49,10 @@ public class OrderController {
     }
 
     @RequestMapping(value = "/history")
-    public GetOrderDTO orderHistory(@RequestParam String from, @RequestParam String to) {
+    public GetOrderDTO orderHistory(@RequestParam String from, @RequestParam String to,@RequestParam(defaultValue = "0") Integer pageNo,
+                                    @RequestParam(defaultValue = "2") Integer pageSize) {
         GetOrderDTO response = new GetOrderDTO();
-        List<OrderResponseDTO> orders = orderService.getHistory(from, to);
+        List<OrderResponseDTO> orders = orderService.getHistory(from, to,pageNo,pageSize);
         response.setOrders(orders);
         if (response.getOrders() == null) {
             response.setMessage("Invalid range");

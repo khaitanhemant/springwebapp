@@ -4,10 +4,11 @@ package com.example.springmvcapp.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
-public class Product {
+public class Product implements Serializable {
 
     @Id
     // TODO generation type

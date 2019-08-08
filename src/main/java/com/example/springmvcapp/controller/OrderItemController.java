@@ -6,6 +6,7 @@ import com.example.springmvcapp.service.OrderItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -20,9 +21,9 @@ public class OrderItemController {
     private OrderItemService orderItemService;
 
     @RequestMapping("")
-    public GetOrderItemDTO returnAllOrderItems(){
+    public GetOrderItemDTO returnAllOrderItems(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "2") Integer pageSize){
         GetOrderItemDTO resObj=new GetOrderItemDTO();
-        resObj.setOrderItems(orderItemService.getAllOrderItems());
+        resObj.setOrderItems(orderItemService.getAllOrderItems(pageNo,pageSize));
         if(!resObj.getOrderItems().isEmpty())
         {
             resObj.setMessage("Returned all order item entries");

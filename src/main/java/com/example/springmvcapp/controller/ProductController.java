@@ -5,10 +5,13 @@ import com.example.springmvcapp.dto.GetProductDTO;
 import com.example.springmvcapp.model.Product;
 import com.example.springmvcapp.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/product")
@@ -18,10 +21,10 @@ public class ProductController {
     private ProductService productService;
 
     @RequestMapping("")
-    public GetProductDTO returnAllProducts()
+    public GetProductDTO returnAllProducts(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "2") Integer pageSize)
     {
         GetProductDTO resObj=new GetProductDTO();
-        resObj.setProducts(productService.getAllProducts());
+        resObj.setProducts(productService.getAllProducts(pageNo,pageSize));
         if(!resObj.getProducts().isEmpty())
         {
             resObj.setMessage("All products returned");
@@ -33,7 +36,7 @@ public class ProductController {
     }
 
     @RequestMapping("/{ids}")
-    public GetProductDTO returnProduct(@PathVariable List<Long> ids)
+    public GetProductDTO returnProducts(@PathVariable List<Long> ids)
     {
         final GetProductDTO response = new GetProductDTO();
         response.setProducts(productService.getAllProductsById(ids));
@@ -56,5 +59,4 @@ public class ProductController {
         final Product pro=productService.createProduct(product);
         return "Product "+pro.getProId()+" has been successfully added.";
     }
-
 }

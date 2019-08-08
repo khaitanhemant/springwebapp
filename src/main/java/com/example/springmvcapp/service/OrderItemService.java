@@ -4,6 +4,8 @@ import com.example.springmvcapp.model.OrderEntity;
 import com.example.springmvcapp.model.OrderItem;
 import com.example.springmvcapp.repository.OrderItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,12 +19,13 @@ public class OrderItemService {
     @Autowired
     private OrderItemRepository orderItemRepository;
 
-    public List<OrderItem> getAllOrderItems() {
-        return orderItemRepository.findAll();
+    public List<OrderItem> getAllOrderItems(Integer pageNo, Integer pageSize) {
+        Page<OrderItem> pagedResult=orderItemRepository.findAll(PageRequest.of(pageNo,pageSize));
+        return pagedResult.getContent();
     }
 
     public List<OrderItem> getOrderItemsByIds(List<Long> ids) {
-        return orderItemRepository.findOrderItemsByIdIn(ids);
+        return orderItemRepository.findAllById(ids);
     }
 
     public List<OrderItem> getAllOrderItemsByOrdId(List<Long> ids) {

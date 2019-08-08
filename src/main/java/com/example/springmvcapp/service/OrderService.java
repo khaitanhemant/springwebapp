@@ -6,10 +6,12 @@ import com.example.springmvcapp.model.OrderEntity;
 import com.example.springmvcapp.model.OrderItem;
 import com.example.springmvcapp.model.Product;
 import com.example.springmvcapp.repository.OrderRepository;
-import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
@@ -101,25 +103,30 @@ public class OrderService {
         return resObjs;
     }
 
-    private boolean validateOrder(OrderResponseDTO order)
-    {
-        if(order.getOrderItems().isEmpty()){
+    private boolean validateOrder(OrderResponseDTO order) {
+        if (order.getOrderItems().isEmpty()) {
             return false;
         }
-        for(ItemResponseDTO orderItem:order.getOrderItems())
-        {
-            if(orderItem.getQty()!=0)
-            {
+        for (ItemResponseDTO orderItem : order.getOrderItems()) {
+            if (orderItem.getQty() != 0) {
                 return true;
             }
         }
         return false;
     }
 
-    public List<OrderResponseDTO> getAllOrders() {
-        final List<OrderEntity> orders = orderRepository.findAll();
-        final List<OrderItem> orderItems = orderItemService.getAllOrderItems();
-        return getOrderResponseList(orders, orderItems);
+    public List<OrderResponseDTO> getAllOrders(Integer pageNo,Integer pageSize) {
+
+        Page<OrderEntity> pagedResult=orderRepository.findAll(PageRequest.of(pageNo,pageSize));
+        final List<OrderEntity> orders = pagedResult.getContent();
+        List<Long> ids=new ArrayList<>();
+        for(OrderEntity order:orders)
+        {
+            ids.add(order.getOrdId());
+        }
+        final List<OrderItem> orderItems = orderItemService.getAllOrderItemsByOrdId(ids);
+        List<OrderResponseDTO> response = getOrderResponseList(orders, orderItems);
+        return response;
     }
 
     public List<OrderResponseDTO> getOrdersByIds(List<Long> ids) {
@@ -131,7 +138,7 @@ public class OrderService {
     public OrderEntity createOrder(OrderResponseDTO order) {
         final List<ItemResponseDTO> itemResponseDTOS = order.getOrderItems();
         final OrderEntity orderEntity = new OrderEntity();
-        if(!validateOrder(order)){
+        if (!validateOrder(order)) {
             return null;
         }
         final List<OrderItem> orderItems = new ArrayList<>();
@@ -153,7 +160,7 @@ public class OrderService {
         return orderEntity;
     }
 
-    public List<OrderResponseDTO> getHistory(String from, String to) {
+    public List<OrderResponseDTO> getHistory(String from, String to,Integer pageNo,Integer pageSize) {
         LocalDate fromDate = LocalDate.parse(from);
         LocalDate toDate = LocalDate.parse(to);
         LocalDate toDatePlusOne = toDate.plusDays(1);
@@ -161,7 +168,8 @@ public class OrderService {
         if (fromDate.isAfter(toDatePlusOne)) {
             return null;
         } else {
-            orders = orderRepository.getAllByOrderDateBetween(fromDate, toDatePlusOne);
+            Page<OrderEntity> pagedResult=orderRepository.getAllByOrderDateBetween(fromDate,toDatePlusOne,PageRequest.of(pageNo,pageSize));
+            orders = pagedResult.getContent();
             List<Long> ids = new ArrayList<>();
             for (OrderEntity order : orders) {
                 ids.add(order.getOrdId());
