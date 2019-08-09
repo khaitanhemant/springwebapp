@@ -30,7 +30,7 @@ public class ProductService {
         return pagedResult.getContent();
     }
 
-//    @Cacheable(value = "products", key = "#ids")
+    @Cacheable(value = "products", key = "#ids")
     public List<Product> getAllProductsById(List<Long> ids){
         log.info("Getting products with IDs:" +ids);
         return productRepository.findAllById(ids);
