@@ -1,0 +1,45 @@
+
+
+.list-vertical{
+    margin-left: 400px;
+}
+
+.list-vertical li{
+    overflow: hidden;
+    background-color:#ffffff;
+    border:1px solid #dbe3e7;
+    border-radius: 3px;
+    box-shadow: 1px 3px 1px rgba(0, 0, 0, 0.08);
+
+    max-width:570px;
+    margin-bottom: 25px;
+    padding: 25px;
+}
+
+/* Image */
+
+.list-vertical .photo{
+    float:right;
+    box-shadow : 0 0 20px 8px #f3f3f3 inset;
+    text-align: center;
+    width: 200px;
+    height: 200px;
+    margin-right: 25px;
+    padding: 10px 0;
+    box-sizing: border-box;
+}
+
+.list-vertical .heading{
+    max-width: 500px;
+}
+
+.list-vertical .heading h2 a{
+    font-size: 18px;
+    text-decoration: none;
+    color: #000000;
+    float: left;
+}
+
+
+
+
